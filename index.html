@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cartas Pokémon</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <h1>Lista de Cartas Pokémon</h1>
+    <div id="cartas" class="cartas-container"></div>
+
+    <!-- Firebase -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
+        import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyC9Z4RQQ0y_wgsvPOJxlDJcBB-NvqsTQwE",
+            authDomain: "lista-de-cartas-pokemon.firebaseapp.com",
+            projectId: "lista-de-cartas-pokemon",
+            storageBucket: "lista-de-cartas-pokemon.firebasestorage.app",
+            messagingSenderId: "80596810270",
+            appId: "1:80596810270:web:e3c767607450463dd38c0f"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        async function cargarCartas() {
+            const cartasDiv = document.getElementById("cartas");
+            const querySnapshot = await getDocs(collection(db, "cartas"));
+
+            let cartasHTML = "";
+            querySnapshot.forEach((doc) => {
+                const carta = doc.data();
+                cartasHTML += `
+                    <div class="card">
+                        <img src="${carta.imagen}" alt="${carta.nombre}">
+                        <div class="card-info">
+                            <h3>${carta.nombre}</h3>
+                            <p><strong>Numeración:</strong> ${carta.number}</p>
+                            <p><strong>Precio:</strong> S/${carta.precio}</p>
+                            <p><strong>Stock:</strong> ${carta.stock}</p>
+                            <button onclick="window.location.href='detalle.html?id=${doc.id}'">Ver Detalles</button>
+                        </div>
+                    </div>
+                `;
+            });
+            cartasDiv.innerHTML = cartasHTML;
+        }
+
+        cargarCartas();
+    </script>
+</body>
+</html>
