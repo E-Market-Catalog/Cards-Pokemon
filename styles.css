@@ -280,18 +280,16 @@ button:hover {
     }
 }
 
-
-/* Ajustes para móviles */
+/* Ajustes para móviles pequeños y medianos */
 @media (max-width: 768px) {
-
     .notificacion-general {
-        width: 90%;  /* Que ocupe más ancho en móviles */
-        max-width: 350px; /* Evita que sea demasiado ancha */
-        padding: 12px;  /* Reduce el espacio interno */
+        width: 90%;
+        max-width: 350px;
+        padding: 12px;
     }
 
     .cartas-container {
-        grid-template-columns: repeat(2, 1fr); /* Dos columnas */
+        grid-template-columns: repeat(2, 1fr);
         gap: 10px;
         padding: 15px;
     }
@@ -300,59 +298,90 @@ button:hover {
         flex-direction: column;
         text-align: center;
         width: 100%;
-        max-width: 300px; /* Evita que crezca demasiado */
+        max-width: 280px;
         margin: auto;
+        padding: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
     }
 
     .card img {
-        margin-right: 0;
-        margin-bottom: 10px;
-        width: 100px;
-        height: auto;
-    }
-
-    .search-container {
-        width: 90%;
+        width: 160px;  /* Tamaño fijo */
+        height: 220px; /* Tamaño fijo */
+        object-fit: cover; /* Mantiene las proporciones */
+        display: block;
+        margin: auto;
     }
 }
 
-/* Dimensión intermedia para tablets y pantallas más grandes */
-@media (min-width: 769px) and (max-width: 1024px) {
+/* Ajustes específicos para Huawei Y9 Plus y móviles grandes */
+@media (min-width: 769px) and (max-width: 900px) {
     .cartas-container {
-        grid-template-columns: repeat(3, 1fr); /* Tres columnas */
-        gap: 15px;
+        grid-template-columns: repeat(3, 1fr); 
+        gap: 12px;
         padding: 20px;
     }
 
     .card {
-        max-width: 320px;
+        max-width: 250px;
+        padding: 12px;
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+    }
+
+    .card img {
+        width: 180px;  
+        height: 250px; 
+        object-fit: cover;
+        display: block;
+        margin: auto;
     }
 }
 
-/* Ajustes para pantallas pequeñas */
+/* Ajustes para pantallas pequeñas (480px o menos) */
 @media (max-width: 480px) {
     .cartas-container {
-        grid-template-columns: repeat(2, 1fr); /* Dos columnas */
-        gap: 5px; /* Reducir el espacio entre cartas */
-        padding: 5px; /* Reducir el padding */
+        grid-template-columns: repeat(2, 1fr);
+        gap: 5px;
+        padding: 10px;
     }
 
     .card {
         width: 100%;
-        max-width: 160px; /* Hacerlas más pequeñas */
-        padding: 8px; /* Reducir el padding interno */
+        max-width: 160px;
+        padding: 8px;
+        display: flex;
+        align-items: center;
+        flex-direction: column;
     }
-
+    
     .card img {
-        width: 80px; /* Reducir tamaño de imagen */
-        height: auto;
+        width: 140px;
+        height: 200px;
+        object-fit: cover;
+        display: block;
+        margin: auto;
     }
 
     .card-info h3 {
-        font-size: 0.8rem; /* Reducir el tamaño del texto */
+        font-size: 0.8rem;
     }
 
     .card-info p {
         font-size: 0.75rem;
+    }
+
+    .contenedor-seleccion {
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .opcion-seleccion {
+        width: 80%;
+        font-size: 0.85rem;
+        padding: 6px 12px;
     }
 }
