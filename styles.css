@@ -8,16 +8,131 @@ body {
     text-align: center;
 }
 
+.notificacion {
+    display: none;
+    background: #ffcc00;
+    padding: 10px;
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    border-radius: 50px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+    z-index: 9997;
+}
+
+/* Botón de cierre */
+.notificacion button {
+    background: #ffffff00;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    font-size: 12px;
+    border-radius: 50px;
+    transition: background 0.3s ease-in-out;
+}
+
+.notificacion button:hover {
+    background: #b13e42;
+}
+
 h1 {
     font-size: 2rem;
     margin: 20px 0;
     color: #ffd700;
 }
 
+/* Fondo semitransparente cuando la notificación está activa */
+#fondoOpaco {
+    display: none;
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    z-index: 9998;
+}
+
+/* Estilos para la Notificación General */
+.notificacion-general {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #ff6600; /* Color ajustado */
+    color: #ffffff;
+    padding: 16px;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); /* Sombra más suave */
+    z-index: 9999;
+    font-weight: 600;
+    text-align: center;
+    width: fit-content; /* Se ajusta al contenido */
+    max-width: 80%; /* Evita que sea demasiado ancha en pantallas grandes */
+}
+
+/* Botón de cierre de la notificación */
+.notificacion-general button {
+    display: block; /* Hace que el botón ocupe toda la línea */
+    margin: 12px auto 0; /* Lo centra horizontalmente */
+    background-color: #cc0000; /* Color ajustado */
+    color: #ffffff;
+    border: none;
+    padding: 8px 12px;
+    cursor: pointer;
+    border-radius: 6px;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+}
+
+.notificacion-general button:hover {
+    background-color: #990000; /* Color ajustado */
+}
+
+
+/* 🟢 Estilo del buscador */
+.search-container {
+    position: relative;
+    width: 80%;
+    max-width: 600px;
+    margin: 10px auto;
+    display: flex;
+    justify-content: center;
+}
+
+#searchBar {
+    width: 100%;
+    padding: 10px 40px 10px 15px;
+    font-size: 1rem;
+    border: 2px solid #ffcc00;
+    border-radius: 20px;
+    outline: none;
+    background-color: #2a2a2a;
+    color: white;
+}
+
+.search-icon {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1.2rem;
+    color: #ffcc00;
+}
+
+.highlight {
+    background-color: yellow;
+    color: black;
+    font-weight: bold;
+    padding: 0 2px;
+    border-radius: 3px;
+}
+
 /* 🟢 Contenedor de cartas */
 .cartas-container {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    grid-template-columns: repeat(3, minmax(350px, 1fr));
     gap: 20px;
     padding: 30px;
     justify-content: center;
@@ -25,6 +140,7 @@ h1 {
 
 /* 🟢 Tarjetas de carta */
 .card {
+    max-width: 400px; /* Limita el tamaño de las cartas */
     background-color: #2a2a2a;
     border-radius: 12px;
     display: flex;
@@ -40,11 +156,13 @@ h1 {
 
 /* 🟢 Imagen de la carta */
 .card img {
-    width: 160px;
-    height: auto;
+    width: 160px; /* Ancho fijo */
+    height: 220px; /* Altura fija */
+    object-fit: cover; /* Ajusta la imagen sin deformarla */
     border-radius: 10px;
     margin-right: 15px;
 }
+
 
 /* 🟢 Información de la carta */
 .card-info {
@@ -63,13 +181,25 @@ h1 {
     margin: 4px 0;
 }
 
-/* Centrar solo el botón */
+/* 🟢 Botones dentro de las cartas */
 .card-info button {
     display: block;
-    margin: 15px auto 10px; /* Centra horizontalmente */
+    margin: 15px auto 10px;
+    background-color: #ffcc00;
+    color: #222;
+    font-size: 1rem;
+    padding: 8px 20px;
+    border: none;
+    border-radius: 15px;
+    cursor: pointer;
+    transition: background 0.2s ease-in-out;
 }
 
-/* 🟢 Botones */
+.card-info button:hover {
+    background-color: #ffeb3b;
+}
+
+/* 🟢 Botones generales */
 button {
     background-color: #ffcc00;
     color: #222;
@@ -85,10 +215,73 @@ button:hover {
     background-color: #ffeb3b;
 }
 
+/* 🟢 Carta agotada */
+.agotado {
+    opacity: 0.8;
+    filter: grayscale(40%);
+    border: 3px solid rgb(118, 17, 17);
+    background-color: rgba(67, 57, 57, 0.1);
+}
+
+/* 🟢 Contenedor de selección */
+.contenedor-seleccion {
+    display: flex;
+    justify-content: center;
+    margin: 20px 0;
+    gap: 15px;
+}
+
+/* 🟢 Opciones de selección */
+.opcion-seleccion {
+    padding: 10px 20px;
+    font-size: 1rem;
+    background-color: #333;
+    color: #ffcc00;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background 0.2s ease-in-out, transform 0.2s ease-in-out;
+    box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+.opcion-seleccion:hover {
+    background-color: #444;
+    transform: scale(1.05);
+}
+
+.opcion-seleccion.activo {
+    background-color: #ffcc00;
+    color: #222;
+    font-weight: bold;
+}
+
+/* 🟢 Secciones de productos */
+.seccion {
+    display: none; /* Ocultar por defecto */
+}
+
+.mostrar {
+    display: grid; /* Mostrar la sección activa como grid */
+}
+
+/* 🟢 Animación de aparición */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
 /* 🟢 Responsividad */
 @media (max-width: 768px) {
     .cartas-container {
-        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+        padding: 20px;
     }
 
     .card {
@@ -99,5 +292,13 @@ button:hover {
     .card img {
         margin-right: 0;
         margin-bottom: 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    .cartas-container {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+        padding: 20px;
     }
 }

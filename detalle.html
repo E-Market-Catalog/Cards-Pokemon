@@ -165,8 +165,8 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
-        import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
-
+        import { getFirestore, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
+    
         const firebaseConfig = {
             apiKey: "AIzaSyC9Z4RQQ0y_wgsvPOJxlDJcBB-NvqsTQwE",
             authDomain: "lista-de-cartas-pokemon.firebaseapp.com",
@@ -175,10 +175,10 @@
             messagingSenderId: "80596810270",
             appId: "1:80596810270:web:e3c767607450463dd38c0f"
         };
-
+    
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
-
+    
         async function cargarDetalle() {
             const params = new URLSearchParams(window.location.search);
             const id = params.get("id");
@@ -186,49 +186,59 @@
             if (id) {
                 try {
                     const docRef = doc(db, "cartas", id);
-                    const docSnap = await getDoc(docRef);
+                    
+                    onSnapshot(docRef, (docSnap) => {
+                        if (docSnap.exists()) {
+                            const item = docSnap.data();
+                            document.getElementById("detalle-imagen").innerHTML = `<img src="${item.imagen}" alt="${item.nombre}">`;
+                            let infoHTML = `<h2>${item.nombre}</h2><p><strong>Precio:</strong> S/${item.precio}</p>`;
 
-                    if (docSnap.exists()) {
-                        const carta = docSnap.data();
+                            if (item.number !== undefined) {
+                                infoHTML += `
+                                    <p><strong>Numeración:</strong> ${item.number}</p>
+                                    <p><strong>Acabado:</strong> ${item.acabado}</p>
+                                    <p><strong>Rareza:</strong> ${item.rareza}</p>
+                                    <p><strong>Idioma:</strong> ${item.idioma}</p>
+                                    <p><strong>Stock:</strong> ${item.stock}</p>`;
+                            } else if (item.contenido !== undefined) {
+                                infoHTML += `
+                                    <p><strong>Contenido:</strong> ${item.contenido}</p>
+                                    <p><strong>Stock:</strong> ${item.stock}</p>`;
+                            }
 
-                        document.getElementById("detalle-imagen").innerHTML = `
-                            <img src="${carta.imagen}" alt="${carta.nombre}">
-                        `;
+                            infoHTML += `<button class="back-btn" onclick="window.location.href='index.html'">Volver</button>`;
+                            document.getElementById("detalle-info").innerHTML = infoHTML;
 
-                        document.getElementById("detalle-info").innerHTML = `
-                            <h2>${carta.nombre}</h2>
-                            <p><strong>Precio:</strong> S/${carta.precio}</p>
-                            <p><strong>Numeración:</strong> ${carta.number}</p>
-                            <p><strong>Acabado:</strong> ${carta.acabado}</p>
-                            <p><strong>Rareza:</strong> ${carta.rareza}</p>
-                            <p><strong>Idioma:</strong> ${carta.idioma}</p>
-                            <p><strong>Stock:</strong> ${carta.stock}</p>
-                            <button class="back-btn" onclick="window.location.href='index.html'">Volver</button>
-                        `;
-
-                        document.getElementById("precios-container").innerHTML = `
-                            <div class="precio-item">
-                                <img src="images/logos precios/tcgplayer.jpg" alt="TCGPlayer">
-                                <span>$${carta.precioTCGPlayer}</span>
-                            </div>
-                            <div class="precio-item">
-                                <img src="images/logos precios/troll and toad.png" alt="Troll and Toad">
-                                <span>$${carta.precioTroll}</span>
-                            </div>
-                        `;
-                    } else {
-                        document.getElementById("detalle-info").innerHTML = "<p>Carta no encontrada.</p>";
-                    }
+                            if (item.number !== undefined) {
+                                document.getElementById("precios-container").innerHTML = `
+                                    <div class="precio-item">
+                                        <img src="images/logos precios/tcgplayer.jpg" alt="TCGPlayer">
+                                        <span>$${item.precioTCGPlayer}</span>
+                                    </div>
+                                    <div class="precio-item">
+                                        <img src="images/logos precios/troll and toad.png" alt="Troll and Toad">
+                                        <span>$${item.precioTroll}</span>
+                                    </div>
+                                `;
+                            } else {
+                                document.getElementById("precios-container").innerHTML = "";
+                            }
+                        } else {
+                            document.getElementById("detalle-info").innerHTML = "<p>Item no encontrado.</p>";
+                        }
+                    });
                 } catch (error) {
                     console.error("Error obteniendo los datos:", error);
-                    document.getElementById("detalle-info").innerHTML = "<p>Error al cargar la carta.</p>";
+                    document.getElementById("detalle-info").innerHTML = "<p>Error al cargar el item.</p>";
                 }
             } else {
-                document.getElementById("detalle-info").innerHTML = "<p>ID de carta no proporcionado.</p>";
+                document.getElementById("detalle-info").innerHTML = "<p>ID de item no proporcionado.</p>";
             }
         }
 
+    
         cargarDetalle();
-    </script>
+    </script>    
+        
 </body>
 </html>

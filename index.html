@@ -8,49 +8,191 @@
 </head>
 <body>
     <h1>Lista de Cartas Pokémon</h1>
-    <div id="cartas" class="cartas-container"></div>
+    
+    <div class="search-container">
+        <input type="text" id="searchBar" placeholder="Buscar carta o accesorio..." oninput="filtrarCartas()">
+        <span class="search-icon">🔍</span>
+    </div>
+
+    <div class="contenedor-seleccion">
+        <div class="opcion-seleccion activo" data-seccion="cartas" onclick="mostrarSeccion('cartas')">📌 Cartas Pokémon</div>
+        <div class="opcion-seleccion" data-seccion="accesorios" onclick="mostrarSeccion('accesorios')">🛍️ Accesorios de Colección</div>
+    </div>
+
+    <!-- Fondo Opaco -->
+    <div id="fondoOpaco"></div>
+
+    <!-- Notificación General -->
+    <div id="notificacionGeneral" class="notificacion-general">
+        📢 <span id="mensajeNotificacionGeneral"></span>
+        <button onclick="cerrarNotificacionGeneral()">❌</button>
+    </div>
+
+
+    <!-- Notificación persistente -->
+    <div id="notificacion" class="notificacion">
+        📢 <span id="mensajeNotificacion"></span>
+        <button onclick="cerrarNotificacion()">❌</button>
+    </div>    
+    
+
+    <div id="cartas" class="seccion mostrar cartas-container"></div>
+    <div id="accesorios" class="seccion cartas-container"></div>
+
 
     <!-- Firebase -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
-        import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
+    import { getFirestore, collection, onSnapshot } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyC9Z4RQQ0y_wgsvPOJxlDJcBB-NvqsTQwE",
-            authDomain: "lista-de-cartas-pokemon.firebaseapp.com",
-            projectId: "lista-de-cartas-pokemon",
-            storageBucket: "lista-de-cartas-pokemon.firebasestorage.app",
-            messagingSenderId: "80596810270",
-            appId: "1:80596810270:web:e3c767607450463dd38c0f"
-        };
+    const firebaseConfig = {
+        apiKey: "AIzaSyC9Z4RQQ0y_wgsvPOJxlDJcBB-NvqsTQwE",
+        authDomain: "lista-de-cartas-pokemon.firebaseapp.com",
+        projectId: "lista-de-cartas-pokemon",
+        storageBucket: "lista-de-cartas-pokemon.appspot.com",
+        messagingSenderId: "80596810270",
+        appId: "1:80596810270:web:e3c767607450463dd38c0f"
+    };
 
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
 
-        async function cargarCartas() {
-            const cartasDiv = document.getElementById("cartas");
-            const querySnapshot = await getDocs(collection(db, "cartas"));
+    let productosData = [];
 
-            let cartasHTML = "";
-            querySnapshot.forEach((doc) => {
-                const carta = doc.data();
-                cartasHTML += `
-                    <div class="card">
-                        <img src="${carta.imagen}" alt="${carta.nombre}">
-                        <div class="card-info">
-                            <h3>${carta.nombre}</h3>
-                            <p><strong>Numeración:</strong> ${carta.number}</p>
-                            <p><strong>Precio:</strong> S/${carta.precio}</p>
-                            <p><strong>Stock:</strong> ${carta.stock}</p>
-                            <button onclick="window.location.href='detalle.html?id=${doc.id}'">Ver Detalles</button>
-                        </div>
-                    </div>
-                `;
+    function mostrarNotificacion(mensaje) {
+        const notificacion = document.getElementById("notificacion");
+        const mensajeNotificacion = document.getElementById("mensajeNotificacion");
+
+        mensajeNotificacion.innerHTML = mensaje;
+        notificacion.style.display = "block";
+    }
+
+    function cerrarNotificacion() {
+        document.getElementById("notificacion").style.display = "none";
+    }
+
+    function cargarProductos() {
+        try {
+            onSnapshot(collection(db, "cartas"), (querySnapshot) => {
+                const productosPrevios = [...productosData];
+                const productosPreviosIds = productosData.map(p => p.id);
+
+                productosData = [];
+                let productosDataIds = [];
+
+                querySnapshot.forEach((doc) => {
+                    let producto = { id: doc.id, ...doc.data() };
+                    producto.stockNum = isNaN(Number(producto.stock)) ? 0 : Number(producto.stock);
+                    productosData.push(producto);
+                    productosDataIds.push(producto.id);
+                });
+
+                clasificarYMostrarProductos(productosData);
+
+                let stockCambiado = productosData.some(producto => {
+                    let productoPrevio = productosPrevios.find(p => p.id === producto.id);
+                    return productoPrevio && productoPrevio.stock !== producto.stock;
+                });
+
+                let nuevosProductos = productosDataIds.some(id => !productosPreviosIds.includes(id));
+
+                if (stockCambiado || nuevosProductos) {
+                    let mensaje = "";
+                    if (stockCambiado) mensaje += "El Stock de algunos productos fueron actualizados. ";
+                    if (nuevosProductos) mensaje += "Nuevas Cartas o Accesorios fueron agregadas. ";
+
+                    mostrarNotificacion(mensaje);
+                }
             });
-            cartasDiv.innerHTML = cartasHTML;
+        } catch (error) {
+            console.error("Error al cargar productos:", error);
         }
+    }
 
-        cargarCartas();
-    </script>
+    function resaltarTexto(texto, palabra) {
+        if (!palabra) return texto;
+        const regex = new RegExp(`(${palabra})`, "gi");
+        return texto.replace(regex, '<span class="highlight">$1</span>');
+    }
+
+    function tieneNumeracion(nombre) {
+        return /\d/.test(nombre);
+    }
+
+    function clasificarYMostrarProductos(productos, filtro = "") {
+        const cartasDiv = document.getElementById("cartas");
+        const accesoriosDiv = document.getElementById("accesorios");
+        cartasDiv.innerHTML = "";
+        accesoriosDiv.innerHTML = "";
+
+        const productosOrdenados = productos.sort((a, b) => b.stockNum - a.stockNum);
+
+        productosOrdenados.forEach((producto) => {
+            let htmlProducto = `
+                <div class="card ${producto.stock === "Agotado" ? 'agotado' : ''}">
+                    <img src="${producto.imagen}" alt="${producto.nombre}">
+                    <div class="card-info">
+                        <h3>${resaltarTexto(producto.nombre, filtro)}</h3>
+                        <p><strong>Precio:</strong> S/${producto.precio}</p>
+                        <p><strong>Stock:</strong> ${producto.stock}</p>
+                        <button onclick="window.location.href='detalle.html?id=${producto.id}'">Ver Detalles</button>
+                    </div>
+                </div>
+            `;
+
+            if (tieneNumeracion(producto.nombre) && !producto.contenido) {
+                cartasDiv.innerHTML += htmlProducto;
+            } else if (producto.contenido) {
+                accesoriosDiv.innerHTML += htmlProducto;
+            }
+        });
+    }
+
+    window.filtrarCartas = function () {
+        const texto = document.getElementById("searchBar").value.toLowerCase();
+        let productosFiltrados = productosData.filter((producto) =>
+            producto.nombre.toLowerCase().includes(texto)
+        );
+        clasificarYMostrarProductos(productosFiltrados, texto);
+    };
+
+    window.mostrarSeccion = function (seccion) {
+        document.getElementById("cartas").classList.remove("mostrar");
+        document.getElementById("accesorios").classList.remove("mostrar");
+
+        document.querySelectorAll(".opcion-seleccion").forEach(el => el.classList.remove("activo"));
+
+        document.getElementById(seccion).classList.add("mostrar");
+        document.querySelector(`.opcion-seleccion[data-seccion="${seccion}"]`).classList.add("activo");
+    };
+
+    window.cerrarNotificacion = function () {
+        document.getElementById("notificacion").style.display = "none";
+    };
+
+    function mostrarNotificacionGeneral(mensaje) {
+        const notificacionGeneral = document.getElementById("notificacionGeneral");
+        const mensajeNotificacionGeneral = document.getElementById("mensajeNotificacionGeneral");
+        const fondoOpaco = document.getElementById("fondoOpaco");
+
+        mensajeNotificacionGeneral.innerHTML = mensaje;
+        notificacionGeneral.style.display = "block";
+        fondoOpaco.style.display = "block";
+    }
+
+    window.cerrarNotificacionGeneral = function () {
+        document.getElementById("notificacionGeneral").style.display = "none";
+        document.getElementById("fondoOpaco").style.display = "none";
+    };
+
+    document.addEventListener("DOMContentLoaded", () => {
+        mostrarSeccion("cartas");
+        cargarProductos();
+
+        mostrarNotificacionGeneral("¡Bienvenidos a la nueva versión de nuestra tienda! Hemos remodelado la página para una mejor experiencia. Ahora puedes buscar cartas y accesorios más fácilmente. ¡Explora las novedades!");
+    });
+</script>
+
+    
 </body>
 </html>
