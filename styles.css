@@ -6,6 +6,11 @@ body {
     margin: 0;
     padding: 0;
     text-align: center;
+    overflow-x: hidden;
+}
+
+html, body {
+    overflow-x: hidden;
 }
 
 .notificacion {
@@ -276,29 +281,78 @@ button:hover {
 }
 
 
-/* 🟢 Responsividad */
+/* Ajustes para móviles */
 @media (max-width: 768px) {
+
+    .notificacion-general {
+        width: 90%;  /* Que ocupe más ancho en móviles */
+        max-width: 350px; /* Evita que sea demasiado ancha */
+        padding: 12px;  /* Reduce el espacio interno */
+    }
+
     .cartas-container {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 15px;
-        padding: 20px;
+        grid-template-columns: repeat(2, 1fr); /* Dos columnas */
+        gap: 10px;
+        padding: 15px;
     }
 
     .card {
         flex-direction: column;
         text-align: center;
+        width: 100%;
+        max-width: 300px; /* Evita que crezca demasiado */
+        margin: auto;
     }
 
     .card img {
         margin-right: 0;
         margin-bottom: 10px;
+        width: 100px;
+        height: auto;
+    }
+
+    .search-container {
+        width: 90%;
     }
 }
 
-@media (max-width: 480px) {
+/* Dimensión intermedia para tablets y pantallas más grandes */
+@media (min-width: 769px) and (max-width: 1024px) {
     .cartas-container {
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(3, 1fr); /* Tres columnas */
         gap: 15px;
         padding: 20px;
+    }
+
+    .card {
+        max-width: 320px;
+    }
+}
+
+/* Ajustes para pantallas pequeñas */
+@media (max-width: 480px) {
+    .cartas-container {
+        grid-template-columns: repeat(2, 1fr); /* Dos columnas */
+        gap: 5px; /* Reducir el espacio entre cartas */
+        padding: 5px; /* Reducir el padding */
+    }
+
+    .card {
+        width: 100%;
+        max-width: 160px; /* Hacerlas más pequeñas */
+        padding: 8px; /* Reducir el padding interno */
+    }
+
+    .card img {
+        width: 80px; /* Reducir tamaño de imagen */
+        height: auto;
+    }
+
+    .card-info h3 {
+        font-size: 0.8rem; /* Reducir el tamaño del texto */
+    }
+
+    .card-info p {
+        font-size: 0.75rem;
     }
 }

@@ -63,8 +63,11 @@
         const notificacion = document.getElementById("notificacion");
         const mensajeNotificacion = document.getElementById("mensajeNotificacion");
 
+        if (sessionStorage.getItem("notificacionMostrada") === mensaje) return;
+
         mensajeNotificacion.innerHTML = mensaje;
         notificacion.style.display = "block";
+        sessionStorage.setItem("notificacionMostrada", mensaje);
     }
 
     function cerrarNotificacion() {
@@ -98,9 +101,8 @@
 
                 if (stockCambiado || nuevosProductos) {
                     let mensaje = "";
-                    if (stockCambiado) mensaje += "El Stock de algunos productos fueron actualizados. ";
-                    if (nuevosProductos) mensaje += "Nuevas Cartas o Accesorios fueron agregadas. ";
-
+                    if (stockCambiado) mensaje += "El Stock de algunos productos fue actualizado. ";
+                    if (nuevosProductos) mensaje += "Nuevas Cartas o Accesorios fueron agregados. ";
                     mostrarNotificacion(mensaje);
                 }
             });
@@ -159,9 +161,7 @@
     window.mostrarSeccion = function (seccion) {
         document.getElementById("cartas").classList.remove("mostrar");
         document.getElementById("accesorios").classList.remove("mostrar");
-
         document.querySelectorAll(".opcion-seleccion").forEach(el => el.classList.remove("activo"));
-
         document.getElementById(seccion).classList.add("mostrar");
         document.querySelector(`.opcion-seleccion[data-seccion="${seccion}"]`).classList.add("activo");
     };
@@ -188,10 +188,10 @@
     document.addEventListener("DOMContentLoaded", () => {
         mostrarSeccion("cartas");
         cargarProductos();
-
         mostrarNotificacionGeneral("¡Bienvenidos a la nueva versión de nuestra tienda! Hemos remodelado la página para una mejor experiencia. Ahora puedes buscar cartas y accesorios más fácilmente. ¡Explora las novedades!");
     });
 </script>
+
 
     
 </body>
