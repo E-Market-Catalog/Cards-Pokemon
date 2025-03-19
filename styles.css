@@ -9,6 +9,37 @@ body {
     overflow-x: hidden;
 }
 
+/* Estilo para cartas en oferta */
+.en-oferta {
+    border: 3px solid #ffcc00; /* Borde dorado */
+    background: linear-gradient(145deg, #ffcc00 10%, #ff8000 10%); /* Fondo degradado */
+    box-shadow: 0 0 10px rgba(255, 204, 0, 0.8);
+    animation: parpadeo 1.5s infinite alternate;
+}
+
+/* Efecto de parpadeo */
+@keyframes parpadeo {
+    from {
+        transform: scale(1);
+    }
+    to {
+        transform: scale(1.05);
+    }
+}
+
+/* Texto de oferta especial */
+.precio-oferta {
+    font-size: 1.2em;
+    color: #ff0000;
+    font-weight: bold;
+    background: yellow;
+    padding: 3px 8px;
+    border-radius: 10px;
+    display: inline-block;
+    margin-top: 5px;
+}
+
+
 html, body {
     overflow-x: hidden;
 }
@@ -284,32 +315,32 @@ button:hover {
 @media (max-width: 768px) {
     .notificacion-general {
         width: 90%;
-        max-width: 350px;
-        padding: 12px;
+        max-width: 320px;
+        padding: 10px;
     }
 
     .cartas-container {
         grid-template-columns: repeat(2, 1fr);
-        gap: 10px;
-        padding: 15px;
+        gap: 8px;
+        padding: 12px;
     }
 
     .card {
         flex-direction: column;
         text-align: center;
         width: 100%;
-        max-width: 280px;
+        max-width: 260px;
         margin: auto;
-        padding: 10px;
+        padding: 8px;
         display: flex;
         align-items: center;
         justify-content: space-between;
     }
 
     .card img {
-        width: 160px;  /* Tamaño fijo */
-        height: 220px; /* Tamaño fijo */
-        object-fit: cover; /* Mantiene las proporciones */
+        width: 150px;
+        height: 210px;
+        object-fit: cover;
         display: block;
         margin: auto;
     }
@@ -318,22 +349,22 @@ button:hover {
 /* Ajustes específicos para Huawei Y9 Plus y móviles grandes */
 @media (min-width: 769px) and (max-width: 900px) {
     .cartas-container {
-        grid-template-columns: repeat(3, 1fr); 
-        gap: 12px;
-        padding: 20px;
+        grid-template-columns: repeat(2, 1fr);  /* Reducido de 3 a 2 columnas */
+        gap: 10px;
+        padding: 5px;
     }
 
     .card {
-        max-width: 250px;
-        padding: 12px;
+        max-width: 220px;
+        padding: 10px;
         display: flex;
         align-items: center;
         flex-direction: column;
     }
 
     .card img {
-        width: 180px;  
-        height: 250px; 
+        width: 160px;
+        height: 230px;
         object-fit: cover;
         display: block;
         margin: auto;
@@ -345,43 +376,43 @@ button:hover {
     .cartas-container {
         grid-template-columns: repeat(2, 1fr);
         gap: 5px;
-        padding: 10px;
+        padding: 8px;
     }
 
     .card {
         width: 100%;
-        max-width: 160px;
-        padding: 8px;
+        max-width: 150px;
+        padding: 6px;
         display: flex;
         align-items: center;
         flex-direction: column;
     }
-    
+
     .card img {
-        width: 140px;
-        height: 200px;
+        width: 130px;
+        height: 190px;
         object-fit: cover;
         display: block;
         margin: auto;
     }
 
     .card-info h3 {
-        font-size: 0.8rem;
+        font-size: 0.75rem;
     }
 
     .card-info p {
-        font-size: 0.75rem;
+        font-size: 0.7rem;
     }
 
     .contenedor-seleccion {
         flex-direction: column;
         align-items: center;
-        gap: 8px;
+        gap: 6px;
     }
 
     .opcion-seleccion {
-        width: 80%;
-        font-size: 0.85rem;
-        padding: 6px 12px;
+        width: 75%;
+        font-size: 0.8rem;
+        padding: 5px 10px;
     }
 }

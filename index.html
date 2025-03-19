@@ -130,12 +130,16 @@
         const productosOrdenados = productos.sort((a, b) => b.stockNum - a.stockNum);
 
         productosOrdenados.forEach((producto) => {
+            let claseOferta = producto.oferta ? 'en-oferta' : '';
+            let claseAgotado = producto.stock === "Agotado" ? 'agotado' : '';
+            
             let htmlProducto = `
-                <div class="card ${producto.stock === "Agotado" ? 'agotado' : ''}">
+                <div class="card ${claseOferta} ${claseAgotado}">
                     <img src="${producto.imagen}" alt="${producto.nombre}">
                     <div class="card-info">
                         <h3>${resaltarTexto(producto.nombre, filtro)}</h3>
                         <p><strong>Precio:</strong> S/${producto.precio}</p>
+                        ${producto.oferta ? `<p class="precio-oferta">¡Oferta Especial!</p>` : ''}
                         <p><strong>Stock:</strong> ${producto.stock}</p>
                         <button onclick="window.location.href='detalle.html?id=${producto.id}'">Ver Detalles</button>
                     </div>
@@ -149,6 +153,7 @@
             }
         });
     }
+
 
     window.filtrarCartas = function () {
         const texto = document.getElementById("searchBar").value.toLowerCase();
@@ -191,8 +196,5 @@
         mostrarNotificacionGeneral("¡Bienvenidos a la nueva versión de nuestra tienda! Hemos remodelado la página para una mejor experiencia. Ahora puedes buscar cartas y accesorios más fácilmente. ¡Explora las novedades!");
     });
 </script>
-
-
-    
 </body>
 </html>
